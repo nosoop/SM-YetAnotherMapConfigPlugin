@@ -20,7 +20,7 @@
 
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.0.2"
+#define PLUGIN_VERSION "1.0.3"
 public Plugin myinfo = {
 	name = "Yet Another Map Config Plugin",
 	author = "nosoop",
@@ -86,9 +86,8 @@ public void OnAutoConfigsBuffered() {
 }
 
 /**
- * Configuration Setup
+ * Creates the base configuration directories and adds the "stock" configuration files.
  */
-
 void SetupMapConfigDirectories() {
 	for (int i = 0; i < view_as<int>(ConfigPathType); i++) {
 		GenerateConfigDirectory(view_as<ConfigPathType>(i));
@@ -115,6 +114,9 @@ void SetupMapConfigDirectories() {
 	}
 }
 
+/**
+ * Creates a configuration directory.
+ */
 void GenerateConfigDirectory(ConfigPathType type) {
 	char configDirectory[PLATFORM_MAX_PATH];
 	BuildConfigPath(type, configDirectory, sizeof(configDirectory));
@@ -131,6 +133,9 @@ void GenerateConfigDirectory(ConfigPathType type) {
 	}
 }
 
+/**
+ * Creates a "template" configuration file with a description.
+ */
 void GenerateConfig(ConfigPathType type, const char[] sConfigName, const char[] sDescription) {
 	char configPath[PLATFORM_MAX_PATH];
 	
@@ -150,7 +155,7 @@ void GenerateConfig(ConfigPathType type, const char[] sConfigName, const char[] 
 }
 
 /**
- * Configuration helpers
+ * Creates the path to a config file.
  */
 void BuildConfigPath(ConfigPathType type, char[] buffer, int maxlen, const char[] fmt="",
 		any ...) {
@@ -169,7 +174,7 @@ void BuildConfigPath(ConfigPathType type, char[] buffer, int maxlen, const char[
 }
 
 /**
- * Configuration exec utilities
+ * Execute the "root" configuration file.
  */
 void ExecuteGlobalConfig() {
 	ExecuteConfig(ConfigPath_Root, "all.cfg");
@@ -235,10 +240,16 @@ void ExecuteMapPrefixConfigs(const char[] map) {
 	}
 }
 
+/**
+ * Executes the config of a Workshop map by ID.
+ */
 void ExecuteWorkshopConfig(int workshopid) {
 	ExecuteConfig(ConfigPath_Workshop, "%d.cfg", workshopid);
 }
 
+/**
+ * Executes a configuration file of the specified type, formatted as necessary.
+ */
 void ExecuteConfig(ConfigPathType type, const char[] sConfigFormat, any ...) {
 	char fullConfigPath[PLATFORM_MAX_PATH], configExecPath[PLATFORM_MAX_PATH];
 	
@@ -257,7 +268,7 @@ void ExecuteConfig(ConfigPathType type, const char[] sConfigFormat, any ...) {
 }
 
 /**
- * Utility functions
+ * Returns the Workshop ID for the specified map string.
  */
 int GetWorkshopID(const char[] map) {
 	EngineVersion currentGame = GetEngineVersion();

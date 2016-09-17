@@ -20,7 +20,7 @@
 
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.0.0"
+#define PLUGIN_VERSION "1.0.1"
 public Plugin myinfo = {
 	name = "Yet Another Map Config Plugin",
 	author = "nosoop",
@@ -121,7 +121,7 @@ void GenerateConfigDirectory(ConfigPathType type) {
 	Format(configDirectory, sizeof(configDirectory), "%s/%s", GAME_CONFIG_PATH,
 			configDirectory);
 
-	if (!DirExists(configDirectory)) {
+	if (!DirExists(configDirectory, true)) {
 		PrintToServer(SERVER_OUTPUT_PREFIX ... "Created directory file %s", configDirectory);
 		CreateDirectory(configDirectory,  
 				FPERM_U_READ + FPERM_U_WRITE + FPERM_U_EXEC + 

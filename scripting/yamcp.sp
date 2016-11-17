@@ -20,7 +20,7 @@
 
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.0.3"
+#define PLUGIN_VERSION "1.0.4"
 public Plugin myinfo = {
 	name = "Yet Another Map Config Plugin",
 	author = "nosoop",
@@ -30,7 +30,6 @@ public Plugin myinfo = {
 }
 
 #define MAP_NAME_LENGTH 96
-#define MAP_NAME_MAX_SPLITS 16
 
 #define SERVER_OUTPUT_PREFIX "[yamcp] "
 #define GAME_CONFIG_PATH "cfg"
@@ -220,23 +219,21 @@ void ExecuteExtendedCPConfig() {
  * This includes the full map name.
  */
 void ExecuteMapPrefixConfigs(const char[] map) {
-	int nMapNamePortions;
+	char partialMapBuffer[PLATFORM_MAX_PATH];
 	
-	char nameSplits[MAP_NAME_MAX_SPLITS][MAP_NAME_LENGTH];
-	char buffer[MAP_NAME_LENGTH];
-	
-	// TODO possible optimize if we use strcopy and just search for underscores instead
-	// it would remove the need for MAP_NAME_MAX_SPLITS
-	nMapNamePortions = ExplodeString(map, "_", nameSplits, sizeof(nameSplits),
-			sizeof(nameSplits[]));
-	
-	for (int i = 0; i < nMapNamePortions; i++) {
-		StrCat(buffer, sizeof(buffer), nameSplits[i]);
-		if (i < nMapNamePortions - 1) {
-			StrCat(buffer, sizeof(buffer), "_");
+	int currentSplit = 0;
+	while (currentSplit < strlen(map)) {
+		int subSplit = FindCharInString(map[currentSplit], '_', false);
+		
+		if (subSplit == -1) {
+			// subsplit the remaining portion of the string
+			subSplit = strlen(map[currentSplit]);
 		}
 		
-		ExecuteConfig(ConfigPath_Maps, "%s.cfg", buffer);
+		currentSplit += subSplit + 1; // subsplit + underscore
+		strcopy(partialMapBuffer, currentSplit + 1, map); // currentsplit + null
+		
+		ExecuteConfig(ConfigPath_Maps, "%s.cfg", partialMapBuffer);
 	}
 }
 

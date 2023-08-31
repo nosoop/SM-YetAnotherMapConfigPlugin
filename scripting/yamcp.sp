@@ -45,7 +45,8 @@ enum ConfigPathType {
 	ConfigPath_Root = 0,
 	ConfigPath_GameType,
 	ConfigPath_Maps,
-	ConfigPath_Workshop
+	ConfigPath_Workshop,
+	ConfigPath_Last
 };
 
 public void OnPluginStart() {
@@ -88,7 +89,7 @@ public void OnAutoConfigsBuffered() {
  * Creates the base configuration directories and adds the "stock" configuration files.
  */
 void SetupMapConfigDirectories() {
-	for (int i = 0; i < view_as<int>(ConfigPathType); i++) {
+	for (int i = 0; i < view_as<int>(ConfigPath_Last); i++) {
 		GenerateConfigDirectory(view_as<ConfigPathType>(i));
 	}
 	
